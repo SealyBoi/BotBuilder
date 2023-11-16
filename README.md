@@ -14,4 +14,5 @@ Current implemented options are as follows:
     Creates a barebones bot frame that allows for cog usage
 
 ./botbuilder -c {filename}
-    Creates a barebones cog with name {filename}
+    Creates a barebones cog with name {filename}. This will also auto-fill the cog to be loaded upon running the bot.
+    If the bot is already running, then you must load the cog yourself. Else just run the program and it will load.

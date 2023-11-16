@@ -1,11 +1,4 @@
-#! /usr/bin/env python
-import os, sys, getopt
-
-def createbotpy():
-    #Writing bot.py file
-    f = open("bot.py", "a")
-    if (os.stat("bot.py").st_size == 0):
-        f.write("""import os
+import os
 from dotenv import load_dotenv
 
 import discord
@@ -58,65 +51,4 @@ async def unload(ctx, *,name):
 async def reload(ctx, *,name):
     await bot.reload_extension(name)
 
-bot.run(TOKEN)""")
-    else:
-        print("bot.py already exists and is not empty")
-    f.close()
-
-def createenv():
-    #Writing .env file
-    f = open(".env", "a")
-    if (os.stat(".env").st_size == 0):
-        f.write("""# Place your discord token below
-# If you create a git repo be sure to .gitignore this file so users
-# will not be able to steal your token
-DISCORD_TOKEN={token}""")
-    else:
-        print(".env already exists and is not empty")
-    f.close()
-
-def createcog(filename):
-    f = open(f"{filename}Cog.py", "a")
-    if (os.stat(f"{filename}Cog.py").st_size == 0):
-        f.write(f"""from discord.ext import commands
-
-class {filename}Cog(commands.Cog):
-    
-    def __init__(self,bot):
-        self.bot = bot
-
-async def setup(bot):
-    await bot.add_cog({filename}Cog(bot))""")
-        
-        tmp = open('bot.py', 'a+')
-        tmp.seek(0)
-        content = ''
-        for line in tmp:
-            content += line
-            if line == """async def on_ready():\n""":
-                content += f"""    print("Loading {filename}Cog...")\n"""
-                content += f"""    await bot.load_extension("{filename}Cog")\n"""
-        tmp.truncate(0)
-        tmp.write(content)
-        tmp.close()
-    else:
-        print(f"{filename}.py already exists and is not empty")
-    f.close()
-
-def main(argv):
-    opts, args = getopt.getopt(argv,"hbc:t",["cog="])
-    for opt, arg in opts:
-        if opt == '-h':
-            print('botFrame.py -b: creates a barebones bot that allows for cog usage')
-            print('botFrame.py -c <fileName>: creates a barebones cog')
-            sys.exit()
-        elif opt in ("-b"):
-            createbotpy()
-            createenv()
-        elif opt in ("-c", "--cog"):
-            createcog(arg)
-        elif opt in ("-t"):
-            test()
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
+bot.run(TOKEN)
