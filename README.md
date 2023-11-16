@@ -11,7 +11,7 @@ to display a list of options.
 Current implemented options are as follows:
 
 ./botbuilder -b
-    Creates a barebones bot frame that allows for cog usage
+    Creates a barebones bot frame that allows for cog usage.
 
 ./botbuilder -c {filename}
     Creates a barebones cog with name {filename}. This will also auto-fill the cog to be loaded upon running the bot.

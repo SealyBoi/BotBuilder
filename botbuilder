@@ -115,8 +115,6 @@ def main(argv):
             createenv()
         elif opt in ("-c", "--cog"):
             createcog(arg)
-        elif opt in ("-t"):
-            test()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
