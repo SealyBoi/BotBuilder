@@ -107,8 +107,8 @@ def main(argv):
     opts, args = getopt.getopt(argv,"hbc:t",["cog="])
     for opt, arg in opts:
         if opt == '-h':
-            print('botFrame.py -b: creates a barebones bot that allows for cog usage')
-            print('botFrame.py -c <fileName>: creates a barebones cog')
+            print('./botbuilder -b: creates a barebones bot that allows for cog usage')
+            print('./botbuilder -c <fileName>: creates a barebones cog')
             sys.exit()
         elif opt in ("-b"):
             createbotpy()
