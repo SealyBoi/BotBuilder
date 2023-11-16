@@ -1,0 +1,105 @@
+import os, sys, getopt
+
+def createbotpy():
+    #Writing bot.py file
+    f = open("bot.py", "a")
+    if (os.stat("bot.py").st_size == 0):
+        f.write("""import os
+from dotenv import load_dotenv
+
+import discord
+from discord.ext import commands
+
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
+
+#This can be changed according to your bot's permission usage requirements
+intent = discord.Intents.all()
+
+#The command prefix can be changed here as well. If you want to use the default
+#help message simply delete the help_command argument along with the help method
+bot = commands.Bot(command_prefix="!", intents=intent, help_command=None)
+
+#Load all cogs in this method here
+@bot.event
+async def on_ready():
+    print("Loading cogs...")
+    # await bot.load_extension("extension")
+    print("Cogs loaded!")
+
+#Test the bot's connection
+@bot.command()
+async def ping(ctx):
+    await ctx.channel.send("Pong!")
+
+#Custom help message can be created here
+@bot.command(aliases = ["about"])
+async def help(ctx):
+    MyEmbed = discord.Embed(title = "Commands", description = "These are the commands that you can use for this bot", colour = discord.Colour.teal())
+    MyEmbed.set_thumbnail(url = "https://images-eds-ssl.xboxlive.com/image?url=4rt9.lXDC4H_93laV1_eHHFT949fUipzkiFOBH3fAiZZUCdYojwUyX2aTonS1aIwMrx6NUIsHfUHSLzjGJFxxsG72wAo9EWJR4yQWyJJaDb6rYcBtJvTvH3UoAS4JFNDaxGhmKNaMwgElLURlRFeVkLCjkfnXmWtINWZIrPGYq0-&format=source&h=307")
+    MyEmbed.add_field(name = "!ping", value = "This command replies with Pong! when you write !ping", inline = False)
+    await ctx.send(embed = MyEmbed)
+
+#Used to load a cog mid-production so you do not have to restart the bot
+@bot.command()
+async def load(ctx, *,name):
+    await bot.load_extension(name)
+
+#Used to unload a cog mid-production so you do not have to restart the bot
+@bot.command()
+async def unload(ctx, *,name):
+    await bot.unload_extension(name)
+                
+#Used to reload a cog mid-production so you do not have to restart the bot
+@bot.command()
+async def reload(ctx, *,name):
+    await bot.reload_extension(name)
+
+bot.run(TOKEN)""")
+    else:
+        print("bot.py already exists and is not empty")
+    f.close()
+
+def createenv():
+    #Writing .env file
+    f = open(".env", "a")
+    if (os.stat(".env").st_size == 0):
+        f.write("""#Place your discord token below
+#If you create a git repo be sure to .gitignore this file so users
+#will not be able to steal your token
+DISCORD_TOKEN={token}""")
+    else:
+        print(".env already exists and is not empty")
+    f.close()
+
+def createcog(filename):
+    f = open(f"{filename}.py", "a")
+    if (os.stat(f"{filename}.py").st_size == 0):
+        f.write(f"""from discord.ext import commands
+
+class {filename}Cog(commands.Cog):
+    
+    def __init__(self,bot):
+        self.bot = bot
+
+async def setup(bot):
+    await bot.add_cog({filename}Cog(bot))""")
+    else:
+        print(f"{filename}.py already exists and is not empty")
+    f.close()
+
+def main(argv):
+    opts, args = getopt.getopt(argv,"hbc:",["cog="])
+    for opt, arg in opts:
+        if opt == '-h':
+            print('botFrame.py -b: creates a barebones bot that allows for cog usage')
+            print('botFrame.py -c <fileName>: creates a barebones cog')
+            sys.exit()
+        elif opt in ("-b"):
+            createbotpy()
+            createenv()
+        elif opt in ("-c", "--cog"):
+            createcog(arg)
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
